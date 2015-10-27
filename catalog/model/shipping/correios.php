@@ -157,7 +157,7 @@ class ModelShippingCorreios extends Model {
                 );
             } else {
                 // grava no log de erros do OpenCart a mensagem de erro retornado pelos Correios
-                $this->log->write($this->correios[$servico['Codigo']].': '.$servico['MsgErro']);
+               $this->log->write($this->correios[$servico['Codigo']].': CEP: '.$this->cep_destino.' - ['.$servico['Erro'] .'] '.$servico['MsgErro']);
             }
         }
     }
