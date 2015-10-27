@@ -130,7 +130,7 @@ class ModelShippingCorreios extends Model {
         foreach ($servicos as $servico) {
             // o site dos Correios retornou os dados sem erros.
             $valor_frete_sem_adicionais = $servico['Valor'] - $servico['ValorAvisoRecebimento'] - $servico['ValorMaoPropria'] - $servico['ValorValorDeclarado'];
-            if($servico['Erro'] == 0 && $valor_frete_sem_adicionais > 0) {
+            if(($servico['Erro'] == 0 || $servico['Erro']) && $valor_frete_sem_adicionais > 0) {
                 // subtrai do valor do frete as opções desabilitadas nas configurações do módulo - 'declarar valor' é obrigatório para sedex a cobrar
                 $cost = ($this->config->get('correios_declarar_valor') == 'n' && $servico['Codigo'] != $this->correios['Sedex a Cobrar']) ? ($servico['Valor'] - $servico['ValorValorDeclarado']) : $servico['Valor'];
                 $cost = ($this->config->get('correios_aviso_recebimento') == 'n') ? ($cost - $servico['ValorAvisoRecebimento']) : $cost;
@@ -150,7 +150,7 @@ class ModelShippingCorreios extends Model {
                 }
                 $this->quote_data[$servico['Codigo']] = array(
                     'code'         => 'correios.' . $servico['Codigo'],
-                    'title'        => $title,
+                    'title'        => ($servico['Erro'] == 10)?$title.'<br><small>'.$servico['MsgErro'].'</small>':$title ,
                     'cost'         => $cost,
                     'tax_class_id' => $this->config->get('correios_tax_class_id'),
                     'text'         => $text
